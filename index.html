@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Buscador inteligente de fondos concursables de innovación, emprendimiento y proyectos en Chile. Incluye asistente interactivo, filtros y simulador financiero.">
+    <meta name="author" content="Antigravity">
+    <title>Buscador de Fondos de Innovación y Proyectos - Chile 2026</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Style Sheets -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    
+    <!-- Toast Notification (Premium micro-interaction) -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- Header Section -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <span class="logo-icon">🇨🇱</span>
+                <div>
+                    <h1 class="logo-title">FondoInnovación</h1>
+                    <p class="logo-subtitle">Buscador de Fondos y Proyectos Chile 2026</p>
+                </div>
+            </div>
+            
+            <!-- Global Dashboard Stats -->
+            <div class="kpi-panel" id="kpi-panel">
+                <div class="kpi-card" id="kpi-total">
+                    <span class="kpi-val">--</span>
+                    <span class="kpi-lbl">Total Fondos</span>
+                </div>
+                <div class="kpi-card" id="kpi-active">
+                    <span class="kpi-val">--</span>
+                    <span class="kpi-lbl">Convocatorias Abiertas</span>
+                </div>
+                <div class="kpi-card" id="kpi-average">
+                    <span class="kpi-val">--</span>
+                    <span class="kpi-lbl">Financiamiento Promedio</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle-btn" class="icon-btn" aria-label="Cambiar Tema Color">
+                    <!-- Sun Icon (Dark Mode active, show Sun) -->
+                    <svg class="sun-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <!-- Moon Icon (Light Mode active, show Moon) -->
+                    <svg class="moon-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation Bar -->
+    <nav class="main-tabs-nav">
+        <div class="tabs-container">
+            <button class="nav-tab active" id="tab-all-btn" data-target="tab-all">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Todos los Fondos
+            </button>
+            <button class="nav-tab" id="tab-favorites-btn" data-target="tab-favorites">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                Mis Guardados (<span id="favorite-count">0</span>)
+            </button>
+            <button class="nav-tab" id="tab-stats-btn" data-target="tab-stats">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Panel de Estadísticas
+            </button>
+            <button class="nav-tab" id="tab-draft-btn" data-target="tab-draft">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                Redactor IA (BETA)
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Application Wrapper -->
+    <div class="app-layout">
+        
+        <!-- Sidebar: Advanced Filtering Controls -->
+        <aside class="sidebar" id="sidebar-filters" aria-label="Filtros de búsqueda">
+            <div class="sidebar-header">
+                <h2>Filtros Avanzados</h2>
+                <button id="clear-filters-btn" class="text-btn">Limpiar Todo</button>
+            </div>
+            
+            <form id="filters-form" class="filters-form" onsubmit="event.preventDefault();">
+                <!-- Institution Filter -->
+                <div class="filter-group">
+                    <h3>Institución</h3>
+                    <div class="checkbox-list" id="institution-checkbox-list">
+                        <!-- Dynamic checkboxes will be injected by app.js -->
+                    </div>
+                </div>
+
+                <!-- Target Profile Filter -->
+                <div class="filter-group">
+                    <h3>¿Quién postula? (Perfil)</h3>
+                    <div class="radio-list">
+                        <label class="custom-radio">
+                            <input type="radio" name="target" value="all" checked>
+                            <span class="radio-mark"></span>
+                            Todos los perfiles
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="target" value="Persona Natural">
+                            <span class="radio-mark"></span>
+                            Persona Natural
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="target" value="Empresa">
+                            <span class="radio-mark"></span>
+                            Empresa / Pyme / Startup
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="target" value="Estudiante/Investigador">
+                            <span class="radio-mark"></span>
+                            Estudiante / Investigador
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="target" value="Vulnerabilidad">
+                            <span class="radio-mark"></span>
+                            Social / Vulnerable
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Development Stage Filter -->
+                <div class="filter-group">
+                    <h3>Etapa del Proyecto</h3>
+                    <div class="radio-list">
+                        <label class="custom-radio">
+                            <input type="radio" name="stage" value="all" checked>
+                            <span class="radio-mark"></span>
+                            Cualquier etapa
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="stage" value="Idea/Concepto">
+                            <span class="radio-mark"></span>
+                            Idea / Concepto básico
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="stage" value="Prototipo/MVP">
+                            <span class="radio-mark"></span>
+                            Prototipo / MVP funcional
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="stage" value="Validación Comercial">
+                            <span class="radio-mark"></span>
+                            Validación / Primeras Ventas
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="stage" value="Escalamiento/Ventas">
+                            <span class="radio-mark"></span>
+                            Escalamiento / Madurez
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sector Filter -->
+                <div class="filter-group">
+                    <h3>Sector</h3>
+                    <select name="sector" id="filter-sector" class="custom-select">
+                        <option value="all">Todos los sectores</option>
+                        <option value="General">General / Multisectorial</option>
+                        <option value="Tecnología">Tecnología y Software</option>
+                        <option value="R&D/Ciencia">Ciencia y R&D</option>
+                        <option value="Agroalimentario">Agroalimentario</option>
+                        <option value="Social">Social</option>
+                    </select>
+                </div>
+
+                <!-- Funding Range Filter -->
+                <div class="filter-group">
+                    <h3>Monto de Subsidio</h3>
+                    <select name="amountRange" id="filter-amount" class="custom-select">
+                        <option value="all">Cualquier monto</option>
+                        <option value="under5">Menos de $5.000.000 CLP</option>
+                        <option value="5to35">Entre $5M y $35M CLP</option>
+                        <option value="over35">Más de $35.000.000 CLP</option>
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="filter-group">
+                    <h3>Estado de Convocatoria</h3>
+                    <div class="checkbox-list">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="status" value="open" checked>
+                            <span class="checkmark"></span>
+                            Abiertas
+                        </label>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="status" value="coming_soon" checked>
+                            <span class="checkmark"></span>
+                            Próximas aperturas
+                        </label>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="status" value="closed">
+                            <span class="checkmark"></span>
+                            Cerradas
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Main Display Content Area -->
+        <main class="content-area">
+            
+            <!-- Top Controls: Search Bar & Assistant Button -->
+            <div class="action-bar-container">
+                <div class="search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="search-input" placeholder="Buscar por palabra clave, fondo, institución o perfil..." aria-label="Escribe palabras clave para buscar fondos">
+                    <button id="search-clear-btn" class="search-clear-btn" aria-label="Limpiar búsqueda" style="display:none;">&times;</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="open-quiz-btn" class="primary-btn pulse-anim">
+                        <span class="btn-icon">💡</span>
+                        Asistente Inteligente (Quiz)
+                    </button>
+                    <button id="mobile-filter-toggle" class="secondary-btn mobile-only" aria-label="Mostrar Filtros">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                        Filtros
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Filters Indicators Row -->
+            <div id="active-filters-indicators" class="active-filters-indicators"></div>
+
+            <!-- Tab 1: All Funds Grid -->
+            <section class="tab-pane active" id="tab-all">
+                <div class="results-header">
+                    <span id="results-count" class="results-count">Cargando fondos...</span>
+                    <div class="sorting-wrapper">
+                        <label for="sort-select">Ordenar por:</label>
+                        <select id="sort-select" class="custom-select-small">
+                            <option value="relevance">Relevancia</option>
+                            <option value="amount-desc">Monto (Mayor a Menor)</option>
+                            <option value="amount-asc">Monto (Menor a Mayor)</option>
+                            <option value="deadline">Cierre más próximo</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="funds-grid" id="funds-grid">
+                    <!-- Cards will be injected dynamically via JavaScript -->
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Cargando catálogo de fondos en tiempo real...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 2: Bookmarked/Favorites List -->
+            <section class="tab-pane" id="tab-favorites">
+                <div class="results-header">
+                    <span class="results-count">Tus Fondos Guardados</span>
+                </div>
+                <div class="funds-grid" id="favorites-grid">
+                    <!-- Favorite cards will be injected dynamically -->
+                    <div class="empty-state">
+                        <div class="empty-icon">📁</div>
+                        <p class="empty-title">Aún no tienes fondos guardados</p>
+                        <p class="empty-desc">Haz clic en el ícono de corazón de cualquier fondo para guardarlo y revisarlo u organizar tus simulaciones después.</p>
+                        <button class="primary-btn" onclick="document.getElementById('tab-all-btn').click();">Explorar Fondos</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 3: Stats & Insights -->
+            <section class="tab-pane" id="tab-stats">
+                <div class="stats-grid">
+                    <!-- Chart 1: Distribution by Institution -->
+                    <div class="stats-card">
+                        <h3>Distribución de Fondos por Institución</h3>
+                        <p class="chart-desc">Porcentaje de fondos aportados por cada organismo público o aceleradora.</p>
+                        <div class="chart-container" id="chart-institution-container">
+                            <!-- SVG Chart will be injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Distribution by Development Stage -->
+                    <div class="stats-card">
+                        <h3>Fondos por Etapa de Proyecto</h3>
+                        <p class="chart-desc">Disponibilidad de subsidios según el nivel de madurez tecnológica/comercial.</p>
+                        <div class="chart-container" id="chart-stage-container">
+                            <!-- SVG Chart will be injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Chart 3: Sector Funding Breakdown -->
+                    <div class="stats-card full-width">
+                        <h3>Comparación de Montos Máximos de Subsidio (Top Fondos)</h3>
+                        <p class="chart-desc">Visualización de financiamientos tope que ofrece cada programa (en millones de CLP).</p>
+                        <div class="chart-container" id="chart-amount-container">
+                            <!-- SVG Chart will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 4: AI Project Application Writer -->
+            <section class="tab-pane" id="tab-draft">
+                <div class="draft-container">
+                    
+                    <!-- Left Column: Inputs & Guidelines Setup -->
+                    <div class="draft-sidebar glassmorphism">
+                        <h3 class="section-title"><span class="icon">🔑</span> Configuración de IA</h3>
+                        
+                        <div class="input-group">
+                            <label for="gemini-key">Gemini API Key</label>
+                            <div class="api-key-wrapper">
+                                <input type="password" id="gemini-key" placeholder="AIzaSy..." autocomplete="off">
+                                <button type="button" class="toggle-key-btn" id="toggle-key-btn" title="Mostrar/Ocultar clave">👁️</button>
+                            </div>
+                            <small class="help-text">Obtén una clave gratis en Google AI Studio. Se guarda localmente.</small>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="gemini-model">Modelo de IA</label>
+                            <select id="gemini-model" class="custom-select">
+                                <option value="gemini-2.5-flash" selected>(Recomendado) Gemini 2.5 Flash</option>
+                                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                                <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                                <option value="gemini-1.5-flash">Gemini 1.5 Flash (Legacy)</option>
+                                <option value="gemini-1.5-pro">Gemini 1.5 Pro (Legacy)</option>
+                            </select>
+                        </div>
+                        
+                        <hr class="divider">
+                        
+                        <h3 class="section-title"><span class="icon">📄</span> Bases de la Convocatoria</h3>
+                        
+                        <div class="bases-selector-tabs">
+                            <button type="button" class="selector-tab active" data-type="url">Enlace URL</button>
+                            <button type="button" class="selector-tab" data-type="file">PDF / Archivo</button>
+                            <button type="button" class="selector-tab" data-type="text">Copiar Texto</button>
+                        </div>
+                        
+                        <!-- URL Input Option -->
+                        <div class="bases-input-pane active" id="pane-url">
+                            <div class="input-group">
+                                <label for="bases-url">Enlace del Concurso / Bases</label>
+                                <div class="url-input-wrapper">
+                                    <input type="url" id="bases-url" placeholder="https://www.corfo.cl/sites/cpp/convocatorias/...">
+                                    <button type="button" class="action-btn-small" id="extract-url-btn">Extraer</button>
+                                </div>
+                                <small class="help-text">Ingresa la URL del concurso. El servidor extraerá los textos clave.</small>
+                            </div>
+                        </div>
+                        
+                        <!-- PDF Upload Option -->
+                        <div class="bases-input-pane" id="pane-file">
+                            <div class="input-group">
+                                <label>Subir Bases en PDF</label>
+                                <div class="file-drop-zone" id="pdf-drop-zone">
+                                    <span class="upload-icon">📁</span>
+                                    <p>Arrastra tu PDF aquí o <span class="browse-link" id="pdf-browse-trigger">busca en tu equipo</span></p>
+                                    <input type="file" id="pdf-file-input" accept="application/pdf" style="display: none;">
+                                    <span class="file-name-display" id="pdf-file-name">Ningún archivo seleccionado</span>
+                                </div>
+                                <button type="button" class="primary-btn block-btn" id="parse-pdf-btn" style="margin-top: 0.8rem; display: none;">Procesar Documento PDF</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Paste Text Option -->
+                        <div class="bases-input-pane" id="pane-text">
+                            <div class="input-group">
+                                <label for="bases-text-raw">Pegar Texto de las Bases</label>
+                                <textarea id="bases-text-raw" rows="6" placeholder="Pega aquí los objetivos, requisitos, criterios de evaluación o formulario del concurso..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Extracted text overview status -->
+                        <div class="bases-status-box" id="bases-status-box">
+                            <span class="status-indicator"></span>
+                            <span class="status-msg">Sin bases cargadas (requerido)</span>
+                            <button type="button" class="text-btn" id="view-bases-text-btn" style="display: none; margin-left: auto;">Ver texto</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Project Details & Draft Generation -->
+                    <div class="draft-main">
+                        <div class="draft-form glassmorphism">
+                            <h3 class="section-title"><span class="icon">💡</span> Tu Idea de Proyecto</h3>
+                            
+                            <div class="draft-form-grid">
+                                <div class="input-group">
+                                    <label for="proj-title">Título del Proyecto</label>
+                                    <input type="text" id="proj-title" placeholder="Ej: Riego Inteligente Maule con IoT">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="proj-budget">Presupuesto Estimado (CLP)</label>
+                                    <input type="number" id="proj-budget" placeholder="Ej: 15000000">
+                                </div>
+                                
+                                <div class="input-group full-width">
+                                    <label for="proj-desc">¿En qué consiste el proyecto? (Idea general, solución y mercado)</label>
+                                    <textarea id="proj-desc" rows="3" placeholder="Describe brevemente qué hace tu proyecto, a quién va dirigido y por qué es innovador..."></textarea>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="proj-applicant">Tipo de Postulante</label>
+                                    <select id="proj-applicant" class="custom-select">
+                                        <option value="persona_natural">Persona Natural (Emprendedor/a)</option>
+                                        <option value="persona_juridica_micro">Persona Jurídica (Empresa &lt; 1 año ventas)</option>
+                                        <option value="persona_juridica_pyme">Persona Jurídica (Pyme con ventas)</option>
+                                        <option value="universidad">Universidad / Centro de Investigación</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label for="proj-stage">Madurez del Proyecto</label>
+                                    <select id="proj-stage" class="custom-select">
+                                        <option value="idea">Idea o Concepto Inicial</option>
+                                        <option value="prototipo">Prototipo / MVP Desarrollado</option>
+                                        <option value="ventas">Validación Comercial / Primeras Ventas</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="draft-action-row">
+                                <button type="button" class="primary-btn pulse-anim" id="generate-draft-btn">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                    Redactar Formulario de Postulación con IA
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Loading Pane -->
+                        <div class="draft-loading-card" id="draft-loading-card" style="display: none;">
+                            <div class="spinner"></div>
+                            <h4>El Agente de IA está analizando las bases y tu propuesta...</h4>
+                            <p class="loading-tip" id="loading-tip">Tip: Rellenando campos de innovación científica...</p>
+                        </div>
+                        
+                        <!-- Results Output Panel -->
+                        <div class="draft-results" id="draft-results" style="display: none;">
+                            
+                            <!-- Analysis Cards Grid -->
+                            <div class="results-meta-grid">
+                                <!-- Rules compatibility check -->
+                                <div class="meta-card glassmorphism" id="alignment-card">
+                                    <h4>Alineación con las Bases</h4>
+                                    <div class="alignment-score-badge" id="alignment-score-badge">85% Match</div>
+                                    <ul class="compatibility-list" id="compatibility-list">
+                                        <!-- Will be populated dynamically -->
+                                    </ul>
+                                </div>
+                                
+                                <!-- Optimization tips -->
+                                <div class="meta-card glassmorphism">
+                                    <h4>Sugerencias de Optimización</h4>
+                                    <ul class="optimization-list" id="optimization-list">
+                                        <!-- Will be populated dynamically -->
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Draft Form Templates -->
+                            <div class="generated-sections-container">
+                                <h3>Formulario de Postulación Sugerido</h3>
+                                <p class="section-desc">Estos textos han sido optimizados según los criterios de evaluación de las bases suministradas.</p>
+                                
+                                <div class="acordeon-sections" id="draft-sections-acordeon">
+                                    <!-- Dynamic sections generated by AI -->
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals Section -->
+
+    <!-- Modal 1: Fund Detailed View & Simulation Calculator -->
+    <div id="fund-detail-modal" class="modal-overlay" aria-hidden="true" role="dialog">
+        <div class="modal-box glassmorphism scale-anim">
+            <button class="modal-close-btn" id="modal-close-btn" aria-label="Cerrar modal">&times;</button>
+            
+            <div class="modal-header">
+                <div class="modal-badge-row">
+                    <span class="badge institution-badge" id="modal-institution">CORFO</span>
+                    <span class="badge status-badge" id="modal-status">Abierto</span>
+                    <span class="badge sector-badge" id="modal-sector">Tecnología</span>
+                </div>
+                <h2 id="modal-title" class="modal-title">Nombre del Fondo</h2>
+            </div>
+            
+            <div class="modal-content">
+                <div class="modal-layout">
+                    <!-- Left: Details and Lists -->
+                    <div class="modal-details-left">
+                        <section class="modal-section">
+                            <h3>Descripción del Programa</h3>
+                            <p id="modal-desc-detailed">Información en profundidad sobre el fondo, su propósito y qué busca fomentar.</p>
+                        </section>
+
+                        <section class="modal-section">
+                            <h3>¿Quién puede postular?</h3>
+                            <div class="info-tag-row">
+                                <span class="info-tag">
+                                    <strong>Perfil:</strong> <span id="modal-profile-lbl">Empresa</span>
+                                </span>
+                                <span class="info-tag">
+                                    <strong>Etapa:</strong> <span id="modal-stage-lbl">Prototipo/MVP</span>
+                                </span>
+                            </div>
+                            <p id="modal-target-details" class="modal-target-desc">Requisitos específicos del perfil de postulante.</p>
+                        </section>
+
+                        <div class="grid-two-columns">
+                            <section class="modal-section">
+                                <h3>Requisitos Clave</h3>
+                                <ul class="checklist-bullet" id="modal-requirements-list">
+                                    <!-- Dynamic requirements list -->
+                                </ul>
+                            </section>
+                            <section class="modal-section">
+                                <h3>Beneficios</h3>
+                                <ul class="checklist-bullet benefit-bullet" id="modal-benefits-list">
+                                    <!-- Dynamic benefits list -->
+                                </ul>
+                            </section>
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Financing Calculator -->
+                    <div class="modal-details-right">
+                        <div class="calculator-card">
+                            <h3>Simulador Financiero</h3>
+                            <p class="calc-subtitle">Calcula la estructura de cofinanciamiento para tu postulación.</p>
+                            
+                            <div class="calc-box">
+                                <div class="input-group">
+                                    <label for="calc-budget-input">Presupuesto Estimado del Proyecto:</label>
+                                    <div class="currency-input-wrapper">
+                                        <span class="currency-symbol">$</span>
+                                        <input type="number" id="calc-budget-input" value="10000000" min="1000000" step="500000" aria-label="Presupuesto total estimado del proyecto">
+                                        <span class="currency-unit">CLP</span>
+                                    </div>
+                                    <input type="range" id="calc-budget-slider" class="range-slider" min="1000000" max="100000000" step="500000" value="10000000" aria-label="Deslizador de Presupuesto del Proyecto">
+                                </div>
+
+                                <div class="results-comparison">
+                                    <div class="calc-res-item accent-box">
+                                        <span class="res-lbl">Aporte Máximo Subsidio (<span id="calc-pct-subsidy">80</span>%)</span>
+                                        <span class="res-val" id="calc-val-subsidy">$8.000.000 CLP</span>
+                                    </div>
+                                    <div class="calc-res-item outline-box">
+                                        <span class="res-lbl">Tu Cofinanciamiento (<span id="calc-pct-user">20</span>%)</span>
+                                        <span class="res-val" id="calc-val-user">$2.000.000 CLP</span>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic breakdown graph using SVG -->
+                                <div class="chart-ratio-wrapper">
+                                    <div class="chart-ratio-bar">
+                                        <div id="ratio-subsidy-bar" class="ratio-part subsidy-part" style="width: 80%;"></div>
+                                        <div id="ratio-user-bar" class="ratio-part user-part" style="width: 20%;"></div>
+                                    </div>
+                                    <div class="chart-ratio-labels">
+                                        <span><span class="dot dot-subsidy"></span> Subsidio</span>
+                                        <span><span class="dot dot-user"></span> Tu Aporte</span>
+                                    </div>
+                                </div>
+
+                                <div class="calc-limit-warning" id="calc-warning-msg" style="display:none;">
+                                    ⚠️ El presupuesto total excede la cobertura máxima del fondo. El aporte estatal se ha topado al límite máximo de este fondo.
+                                </div>
+                            </div>
+
+                            <div class="deadline-box">
+                                <span>Cierre Convocatoria:</span>
+                                <strong id="modal-deadline-date">15 de Junio, 2026</strong>
+                            </div>
+
+                            <a href="#" target="_blank" class="primary-btn block-btn" id="modal-apply-link">
+                                Postular en Sitio Oficial
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Match Quiz Assistant -->
+    <div id="quiz-modal" class="modal-overlay" aria-hidden="true" role="dialog">
+        <div class="modal-box glassmorphism quiz-modal-box scale-anim">
+            <button class="modal-close-btn" id="quiz-close-btn" aria-label="Cerrar Asistente">&times;</button>
+            
+            <div class="quiz-header">
+                <h2>Asistente de Fondos Inteligente</h2>
+                <div class="quiz-progress-bar">
+                    <div id="quiz-progress" class="quiz-progress-fill" style="width: 25%;"></div>
+                </div>
+                <p class="quiz-step-indicator">Paso <span id="quiz-current-step">1</span> de 4</p>
+            </div>
+
+            <!-- Quiz Steps Container -->
+            <div class="quiz-body">
+                
+                <!-- Step 1: Applicant Profile -->
+                <div class="quiz-step active" data-step="1">
+                    <h3>¿Quién es el postulante principal del proyecto?</h3>
+                    <p class="quiz-step-desc">Selecciona el perfil legal o personal de quien presentará la propuesta.</p>
+                    <div class="quiz-options">
+                        <button class="quiz-opt-card" data-key="profile" data-val="Persona Natural">
+                            <span class="opt-emoji">👤</span>
+                            <h4>Persona Natural</h4>
+                            <p>Mayor de 18 años, emprendedor independiente o sin empresa registrada aún.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="profile" data-val="Empresa">
+                            <span class="opt-emoji">🏢</span>
+                            <h4>Empresa / Pyme / Startup</h4>
+                            <p>Personas jurídicas constituidas con iniciación de actividades y ventas netas.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="profile" data-val="Estudiante/Investigador">
+                            <span class="opt-emoji">🎓</span>
+                            <h4>Estudiante / Investigador</h4>
+                            <p>Académicos, alumnos de tesis pre o posgrado vinculados a universidades.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="profile" data-val="Vulnerabilidad">
+                            <span class="opt-emoji">🤝</span>
+                            <h4>Vulnerabilidad Social</h4>
+                            <p>Emprendedores informales de escasos recursos o pertenecientes al 40% del RSH.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Development Stage -->
+                <div class="quiz-step" data-step="2">
+                    <h3>¿En qué etapa de desarrollo se encuentra tu proyecto?</h3>
+                    <p class="quiz-step-desc">Elige la fase que mejor describa la madurez de tu propuesta actual.</p>
+                    <div class="quiz-options">
+                        <button class="quiz-opt-card" data-key="stage" data-val="Idea/Concepto">
+                            <span class="opt-emoji">💡</span>
+                            <h4>Idea / Concepto</h4>
+                            <p>Proyecto en papel, formulando el modelo de negocios o validando el problema inicial.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="stage" data-val="Prototipo/MVP">
+                            <span class="opt-emoji">🛠️</span>
+                            <h4>Prototipo / MVP</h4>
+                            <p>Producto Mínimo Viable desarrollado, prototipo técnico listo para pruebas operativas.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="stage" data-val="Validación Comercial">
+                            <span class="opt-emoji">📈</span>
+                            <h4>Validación Comercial</h4>
+                            <p>Producto validado técnicamente que busca sus primeras transacciones y clientes estables.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="stage" data-val="Escalamiento/Ventas">
+                            <span class="opt-emoji">🚀</span>
+                            <h4>Escalamiento / Ventas</h4>
+                            <p>Empresa en marcha con ventas consolidadas que requiere escalar mercados o expandirse.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Sector -->
+                <div class="quiz-step" data-step="3">
+                    <h3>¿Cuál es el área o sector principal del proyecto?</h3>
+                    <p class="quiz-step-desc">Indica la industria o enfoque tecnológico de tu solución.</p>
+                    <div class="quiz-options">
+                        <button class="quiz-opt-card" data-key="sector" data-val="Tecnología">
+                            <span class="opt-emoji">💻</span>
+                            <h4>Tecnología / Software</h4>
+                            <p>Soluciones digitales, aplicaciones web/móvil, inteligencia artificial, IoT, fintech.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="sector" data-val="R&D/Ciencia">
+                            <span class="opt-emoji">🔬</span>
+                            <h4>Ciencia / I+D</h4>
+                            <p>Investigaciones aplicadas, biotecnología, desarrollo de hardware científico o patentes.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="sector" data-val="Agroalimentario">
+                            <span class="opt-emoji">🌾</span>
+                            <h4>Agroalimentario / Agro</h4>
+                            <p>Agricultura sostenible, cadena alimentaria, tecnologías agrícolas, cambio climático silvoagropecuario.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="sector" data-val="General">
+                            <span class="opt-emoji">⚡</span>
+                            <h4>Multisector / Servicios</h4>
+                            <p>Comercios locales, manufactura general, servicios profesionales o cualquier otra industria.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Budget / Amount -->
+                <div class="quiz-step" data-step="4">
+                    <h3>¿Qué monto estimado de financiamiento necesitas?</h3>
+                    <p class="quiz-step-desc">Elige un rango de acuerdo a la envergadura y plan financiero de tu proyecto.</p>
+                    <div class="quiz-options">
+                        <button class="quiz-opt-card" data-key="amount" data-val="under5">
+                            <span class="opt-emoji">💵</span>
+                            <h4>Menos de $5.000.000 CLP</h4>
+                            <p>Para insumos básicos, herramientas iniciales o poner en marcha pequeños comercios locales.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="amount" data-val="5to35">
+                            <span class="opt-emoji">💰</span>
+                            <h4>De $5M a $35M CLP</h4>
+                            <p>Para validación de prototipos, desarrollo de software, primeras ventas o pre-aceleración startup.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="amount" data-val="over35">
+                            <span class="opt-emoji">🏛️</span>
+                            <h4>Más de $35.000.000 CLP</h4>
+                            <p>Investigación académica de alta complejidad, escalamiento de mercado o proyectos de alto impacto tecnológico.</p>
+                        </button>
+                        <button class="quiz-opt-card" data-key="amount" data-val="any">
+                            <span class="opt-emoji">🌟</span>
+                            <h4>Cualquier monto</h4>
+                            <p>Quiero ver todas las alternativas que calcen con mi perfil y etapa del proyecto.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Results Panel -->
+                <div class="quiz-step" data-step="5" id="quiz-results-step">
+                    <div class="quiz-results-header">
+                        <span class="results-badge">¡Resultados Listos!</span>
+                        <h3>Fondos Recomendados para ti</h3>
+                        <p>De acuerdo a tus respuestas, estos son los mejores fondos concursables para potenciar tu proyecto:</p>
+                    </div>
+                    
+                    <div id="quiz-results-cards" class="quiz-results-cards">
+                        <!-- Best matches injected here -->
+                    </div>
+                    
+                    <div class="quiz-result-actions">
+                        <button class="secondary-btn" id="quiz-restart-btn">Reiniciar Asistente</button>
+                        <button class="primary-btn" id="quiz-finish-btn">Ver Catálogo Filtrado</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Quiz Navigation -->
+            <div class="quiz-footer" id="quiz-nav-footer">
+                <button class="secondary-btn" id="quiz-prev-btn" style="visibility: hidden;">Anterior</button>
+                <div class="quiz-dots">
+                    <span class="quiz-dot active"></span>
+                    <span class="quiz-dot"></span>
+                    <span class="quiz-dot"></span>
+                    <span class="quiz-dot"></span>
+                </div>
+                <!-- Next button is usually hidden or replaced since cards are clickable triggers -->
+                <span class="hint-text">Selecciona una opción para avanzar</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 FondoInnovación Chile. Datos actualizados periódicamente de fuentes oficiales (CORFO, ANID, SERCOTEC).</p>
+            <div class="footer-links">
+                <a href="https://datos.gob.cl" target="_blank">Datos Públicos Gob</a>
+                <a href="https://www.fondos.gob.cl" target="_blank">Fondos Únicos</a>
+                <a href="https://www.corfo.cl" target="_blank">Corfo.cl</a>
+                <a href="https://www.anid.cl" target="_blank">ANID</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>

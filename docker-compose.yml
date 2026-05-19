@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  buscador-fondos:
+    build: .
+    container_name: buscador_fondos_chile
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
